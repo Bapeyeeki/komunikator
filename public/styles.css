@@ -1,0 +1,178 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f7fb;
+}
+
+/* Kontener główny */
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+/* Pasek boczny */
+.sidebar {
+    width: 200px;
+    background-color: #390769;
+    color: #ffffff;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.menu {
+    margin-bottom: 20px;
+}
+
+.channel {
+    padding: 10px;
+    border-bottom: 1px solid #444;
+    cursor: pointer;
+}
+
+.add-channel {
+    margin-top: auto;
+    background-color: #2f3640;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+}
+
+/* Obszar czatu */
+.chat-area {
+    flex-grow: 1;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Nagłówek czatu */
+.chat-header {
+    background-color: #390769;
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Wiadomości */
+.messages {
+    padding: 20px;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.message {
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 8px;
+    max-width: 70%;
+}
+
+.user1 {
+    background-color: #f0f0f0;
+    align-self: flex-start;
+}
+
+.user2 {
+    background-color: #e4f4e4;
+    align-self: flex-end;
+}
+
+.user {
+    font-weight: bold;
+}
+
+/* Input wiadomości */
+.message-input {
+    display: flex;
+    padding: 10px;
+    background-color: #f4f7fb;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.input-text {
+    flex-grow: 1;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    resize: none;
+    min-height: 50px;
+}
+
+.send-button {
+    background-color: #2f3640;
+    color: white;
+    padding: 10px 20px;
+    margin-left: 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* Narzędzia formatowania */
+.format-buttons {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.format-btn {
+    background-color: #2f3640;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* Panel emotek */
+.emoji-picker {
+    display: none;
+    position: absolute;
+    bottom: 60px;
+    right: 20px;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+}
+
+.emoji-btn {
+    font-size: 20px;
+    padding: 5px;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+}
+
+/* Przyciski formatowania */
+.format-btn {
+    font-size: 16px;
+    padding: 5px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: transparent;
+}
+
+.format-btn:hover {
+    background-color: #ddd;
+}
