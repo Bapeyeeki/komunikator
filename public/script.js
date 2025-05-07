@@ -7,6 +7,7 @@ const boldBtn = document.getElementById('bold');
 const underlineBtn = document.getElementById('underline');
 const emojiBtn = document.getElementById('emoji');
 const emojiPicker = document.getElementById('emoji-picker');
+const inputText = document.querySelector('.input-text');  // Edytor tekstu
 
 // Funkcja do przełączania pogrubienia
 boldBtn.addEventListener('click', function () {
@@ -38,21 +39,23 @@ emojiBtn.addEventListener('click', function () {
 // Kliknięcie na emotkę
 document.querySelectorAll('.emoji-btn').forEach(button => {
     button.addEventListener('click', function () {
+        // Upewnijmy się, że edytor ma fokus przed dodaniem emoji
+        inputText.focus();
+        
         const emoji = button.textContent;
-        insertAtCaret(emoji);
+        insertAtCaret(emoji);  // Wstawianie emoji w miejscu kursora
         emojiPicker.style.display = 'none';  // Ukrywa panel emotek po wyborze
     });
 });
 
-// Wstawianie emotek w edytorze
+// Funkcja wstawiania emoji w miejsce kursora w edytorze tekstu
 function insertAtCaret(content) {
-    const input = document.querySelector('.input-text');
     const sel = window.getSelection();
     
     if (!sel.rangeCount) return;
 
-    const range = sel.getRangeAt(0);
-    range.deleteContents(); // Usuwa obecny tekst w wybranym zakresie
+    const range = sel.getRangeAt(0);  // Pobierz zakres zaznaczenia
+    range.deleteContents(); // Usuwa zaznaczoną treść
     range.insertNode(document.createTextNode(content)); // Wstawia emoji lub tekst
 
     // Przesuń kursor za wstawionym emoji
