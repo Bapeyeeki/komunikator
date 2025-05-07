@@ -48,6 +48,7 @@
         <button class="emoji-btn">👍</button>
     </div>
 
+    
     <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
     <script src="script.js"></script>
 </body>
