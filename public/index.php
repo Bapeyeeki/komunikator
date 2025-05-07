@@ -25,14 +25,8 @@
                 <span># general</span>
             </div>
 
-<<<<<<< HEAD
             <div id="messages" class="messages">
                 <!-- Wiadomości będą pojawiać się tutaj -->
-=======
-            <!-- Kontener na wiadomości -->
-            <div class="messages" id="messages">
-                <!-- Wiadomości będą dynamicznie ładowane przez JS -->
->>>>>>> 2cde95f8617b93fde80ded93dc04101d6a259681
             </div>
 
             <div class="message-input">
@@ -45,13 +39,7 @@
                     <button id="underline" class="format-btn"><u>U</u></button>
                     <button id="emoji" class="format-btn">😊</button>
                 </div>
-<<<<<<< HEAD
                 <div class="input-text" contenteditable="true" placeholder="Napisz wiadomość..."></div>
-=======
-
-                <!-- Pole do wpisania wiadomości -->
-                <textarea placeholder="Napisz wiadomość..." class="input-text"></textarea>
->>>>>>> 2cde95f8617b93fde80ded93dc04101d6a259681
                 <button class="send-button" onclick="sendMessage()">Wyślij</button>
             </div>
         </div>

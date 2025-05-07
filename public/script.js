@@ -54,7 +54,6 @@ function insertAtCaret(content) {
 
 // Wysyłanie wiadomości
 function sendMessage() {
-<<<<<<< HEAD
     const input = document.querySelector('.input-text');
     const messageHTML = input.innerHTML.trim();
 
@@ -69,37 +68,3 @@ function sendMessage() {
     input.innerHTML = '';  // Czyści input po wysłaniu
     messagesDiv.scrollTop = messagesDiv.scrollHeight;  // Przewija do ostatniej wiadomości
 }
-=======
-    const message = document.querySelector('.input-text').value.trim();
-    const username = document.getElementById('username')?.value.trim() || 'Anon';
-
-    if (!message) return;
-
-    const formData = new FormData();
-    formData.append('username', username);
-    formData.append('message', message);
-
-    fetch('send_message.php', {
-        method: 'POST',
-        body: formData
-    }).then(() => {
-        document.querySelector('.input-text').value = '';
-        loadMessages();
-    });
-}
-
-// Pobieranie wiadomości
-function loadMessages() {
-    fetch('get_messages.php')
-        .then(response => response.text())
-        .then(data => {
-            const messagesDiv = document.getElementById('messages');
-            messagesDiv.innerHTML = data;
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        });
-}
-
-// Auto-odświeżanie wiadomości co 2 sekundy
-setInterval(loadMessages, 2000);
-window.onload = loadMessages;
->>>>>>> 2cde95f8617b93fde80ded93dc04101d6a259681
