@@ -1,125 +1,108 @@
-// Statusy przycisków formatowania
+// Statusy formatowania
 let isBoldActive = false;
 let isUnderlineActive = false;
 
-// Pobieramy przyciski formatowania
+// Elementy DOM
 const boldBtn = document.getElementById('bold');
 const underlineBtn = document.getElementById('underline');
 const emojiBtn = document.getElementById('emoji');
 const emojiPicker = document.getElementById('emoji-picker');
-const inputText = document.querySelector('.input-text');  // Edytor tekstu
+const inputText = document.querySelector('.input-text');
+const usernameInput = document.getElementById('username');
+const messagesDiv = document.getElementById('messages');
 
-// Funkcja do przełączania pogrubienia
-boldBtn.addEventListener('click', function () {
+// -------------------- FORMATOWANIE --------------------
+
+// Pogrubienie
+boldBtn.addEventListener('click', () => {
     isBoldActive = !isBoldActive;
-    if (isBoldActive) {
-        document.execCommand('bold');
-    } else {
-        document.execCommand('removeFormat');  // Usuwanie pogrubienia
-    }
+    document.execCommand('bold');
     boldBtn.classList.toggle('active', isBoldActive);
 });
 
-// Funkcja do przełączania podkreślenia
-underlineBtn.addEventListener('click', function () {
+// Podkreślenie
+underlineBtn.addEventListener('click', () => {
     isUnderlineActive = !isUnderlineActive;
-    if (isUnderlineActive) {
-        document.execCommand('underline');
-    } else {
-        document.execCommand('removeFormat');  // Usuwanie podkreślenia
-    }
+    document.execCommand('underline');
     underlineBtn.classList.toggle('active', isUnderlineActive);
 });
 
-// Pokaz/ukryj emotki
-emojiBtn.addEventListener('click', function () {
+// Emotki - pokaż/ukryj
+emojiBtn.addEventListener('click', () => {
     emojiPicker.style.display = emojiPicker.style.display === 'block' ? 'none' : 'block';
 });
 
-// Kliknięcie na emotkę
+// Wstawienie emotki
 document.querySelectorAll('.emoji-btn').forEach(button => {
-    button.addEventListener('click', function () {
-        // Upewnijmy się, że edytor ma fokus przed dodaniem emoji
+    button.addEventListener('click', () => {
         inputText.focus();
-        
-        const emoji = button.textContent;
-        insertAtCaret(emoji);  // Wstawianie emoji w miejscu kursora
-        emojiPicker.style.display = 'none';  // Ukrywa panel emotek po wyborze
+        insertAtCaret(button.textContent);
+        emojiPicker.style.display = 'none';
     });
 });
 
-// Funkcja wstawiania emoji w miejsce kursora w edytorze tekstu
+// Wstawianie w miejscu kursora
 function insertAtCaret(content) {
     const sel = window.getSelection();
-    
     if (!sel.rangeCount) return;
 
-    const range = sel.getRangeAt(0);  // Pobierz zakres zaznaczenia
-    range.deleteContents(); // Usuwa zaznaczoną treść
-    range.insertNode(document.createTextNode(content)); // Wstawia emoji lub tekst
-
-    // Przesuń kursor za wstawionym emoji
-    range.setStartAfter(range.endContainer);
-    range.setEndAfter(range.endContainer);
+    const range = sel.getRangeAt(0);
+    range.deleteContents();
+    range.insertNode(document.createTextNode(content));
+    range.collapse(false);
     sel.removeAllRanges();
     sel.addRange(range);
 }
 
-// Funkcja wysyłania wiadomości
+// -------------------- WIADOMOŚCI --------------------
+
+// Wczytaj wiadomości z bazy na start
+window.onload = loadMessages;
+
+function loadMessages() {
+    fetch('get_messages.php')
+        .then(res => res.text())
+        .then(html => {
+            messagesDiv.innerHTML = html;
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        });
+}
+
+// Wyślij wiadomość
 function sendMessage() {
-    const username = document.getElementById('username').value;  // Pobranie nazwy użytkownika
-    const messageHTML = inputText.innerHTML.trim();  // Pobranie treści wiadomości w HTML
+    const username = usernameInput.value.trim();
+    const message = inputText.innerHTML.trim();
+    if (!message || !username) return;
 
-    if (!messageHTML || !username) return;  // Sprawdzamy, czy wiadomość i nazwa użytkownika nie są puste
-
-    // Dodanie wiadomości do widoku
-    const messagesDiv = document.getElementById('messages');
-    const messageDiv = document.createElement('div');
-    messageDiv.className = 'message user1';
-    messageDiv.innerHTML = `<span class="user">${username}:</span> ${messageHTML}`;
-
-    messagesDiv.appendChild(messageDiv);
-
-    // Wysłanie wiadomości do serwera (PHP)
     const formData = new FormData();
     formData.append('username', username);
-    formData.append('message', messageHTML);
+    formData.append('message', message);
 
     fetch('send_message.php', {
         method: 'POST',
         body: formData
-    })
-    .then(() => {
-        inputText.innerHTML = '';  // Czyści pole tekstowe po wysłaniu
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;  // Przewija do ostatniej wiadomości
-    })
-    .catch(err => console.error('Błąd podczas wysyłania wiadomości:', err));
-}
-
-// Automatyczne ładowanie wiadomości co 2 sekundy
-setInterval(loadMessages, 2000);
-
-// Pierwsze załadowanie wiadomości po załadowaniu strony
-window.onload = loadMessages;
-
-function convertTimestamps() {
-    document.querySelectorAll('.message .time').forEach(span => {
-        const utcTime = span.getAttribute('data-time'); // pobiera np. "2024-05-07T10:30:00+00:00"
-        if (!utcTime) return;
-
-        const date = new Date(utcTime);
-        const localTime = date.toLocaleString(); // format lokalny użytkownika
-        span.textContent = ` (${localTime})`;
     });
+
+    inputText.innerHTML = '';
 }
-// Uruchom po załadowaniu wiadomości
-function loadMessages() {
-    fetch('get_messages.php')
-        .then(response => response.text())
-        .then(data => {
-            const messagesDiv = document.getElementById('messages');
-            messagesDiv.innerHTML = data;
-            convertTimestamps(); // Przelicz czas po wczytaniu wiadomości
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        });
+
+// -------------------- PUSHER – NASŁUCH --------------------
+
+const pusher = new Pusher('d48989b62b3e217f5781', {
+    cluster: 'eu'
+});
+
+const channel = pusher.subscribe('chat');
+channel.bind('new-message', function (data) {
+    const msg = document.createElement('div');
+    msg.classList.add('message');
+    msg.innerHTML = `<span class="user">${data.username}:</span> ${data.message} <span class="time">${formatTime(data.created_at)}</span>`;
+    messagesDiv.appendChild(msg);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+});
+
+// Formatowanie czasu
+function formatTime(dateStr) {
+    const date = new Date(dateStr);
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }

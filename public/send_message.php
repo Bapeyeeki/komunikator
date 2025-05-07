@@ -1,26 +1,36 @@
 <?php
-require_once 'db.php'; // Ładujemy klasę połączenia z bazą danych
+require_once 'db.php';
 
-// Tworzymy instancję klasy Database
+$username = $_POST['username'] ?? '';
+$message = $_POST['message'] ?? '';
+
+if (!$username || !$message) {
+    echo json_encode(['error' => 'Brak danych']);
+    exit;
+}
+
+// Zapis do bazy danych
 $db = new Database();
 $conn = $db->getConnection();
 
-// Pobieranie danych z formularza
-$username = $_POST['username'];
-$message = $_POST['message'];
+$stmt = $conn->prepare("INSERT INTO messages (username, message) VALUES (:username, :message)");
+$stmt->execute([
+    ':username' => $username,
+    ':message' => $message
+]);
 
-// Zapytanie SQL do wstawienia wiadomości
-$sql = "INSERT INTO messages (username, message) VALUES (:username, :message)";
-$stmt = $conn->prepare($sql);
+// Wywołujemy pusher osobno
+$data = [
+    'username' => $username,
+    'message' => $message,
+    'created_at' => date('Y-m-d H:i:s')
+];
 
-// Bindowanie wartości
-$stmt->bindParam(':username', $username);
-$stmt->bindParam(':message', $message);
+$ch = curl_init('notify_pusher.php');
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_exec($ch);
+curl_close($ch);
 
-// Wykonanie zapytania
-if ($stmt->execute()) {
-    echo "Wiadomość została wysłana!";
-} else {
-    echo "Wystąpił błąd podczas wysyłania wiadomości.";
-}
-?>
+echo json_encode(['success' => true]);
