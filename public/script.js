@@ -2,7 +2,7 @@
 let isBoldActive = false;
 let isUnderlineActive = false;
 
-// Przełączniki pogrubienia
+// Pobieramy przyciski formatowania
 const boldBtn = document.getElementById('bold');
 const underlineBtn = document.getElementById('underline');
 const emojiBtn = document.getElementById('emoji');
@@ -11,14 +11,22 @@ const emojiPicker = document.getElementById('emoji-picker');
 // Funkcja do przełączania pogrubienia
 boldBtn.addEventListener('click', function () {
     isBoldActive = !isBoldActive;
-    document.execCommand('bold');
+    if (isBoldActive) {
+        document.execCommand('bold');
+    } else {
+        document.execCommand('removeFormat');  // Usuwanie pogrubienia
+    }
     boldBtn.classList.toggle('active', isBoldActive);
 });
 
 // Funkcja do przełączania podkreślenia
 underlineBtn.addEventListener('click', function () {
     isUnderlineActive = !isUnderlineActive;
-    document.execCommand('underline');
+    if (isUnderlineActive) {
+        document.execCommand('underline');
+    } else {
+        document.execCommand('removeFormat');  // Usuwanie podkreślenia
+    }
     underlineBtn.classList.toggle('active', isUnderlineActive);
 });
 
@@ -32,11 +40,11 @@ document.querySelectorAll('.emoji-btn').forEach(button => {
     button.addEventListener('click', function () {
         const emoji = button.textContent;
         insertAtCaret(emoji);
-        emojiPicker.style.display = 'none';
+        emojiPicker.style.display = 'none';  // Ukrywa panel emotek po wyborze
     });
 });
 
-// Wstawianie emotek
+// Wstawianie emotek w edytorze
 function insertAtCaret(content) {
     const sel = window.getSelection();
     if (!sel.rangeCount) return;
@@ -52,19 +60,22 @@ function insertAtCaret(content) {
     sel.addRange(range);
 }
 
-// Wysyłanie wiadomości
+// Funkcja wysyłania wiadomości
 function sendMessage() {
+    const username = document.getElementById('username').value;  // Pobranie nazwy użytkownika
     const input = document.querySelector('.input-text');
     const messageHTML = input.innerHTML.trim();
 
-    if (!messageHTML) return;
+    if (!messageHTML || !username) return;  // Sprawdzamy, czy wiadomość i nazwa użytkownika nie są puste
 
+    // Dodanie wiadomości do widoku
     const messagesDiv = document.getElementById('messages');
     const messageDiv = document.createElement('div');
     messageDiv.className = 'message user1';
-    messageDiv.innerHTML = `<span class="user">Ty:</span> ${messageHTML}`;
+    messageDiv.innerHTML = `<span class="user">${username}:</span> ${messageHTML}`;
 
     messagesDiv.appendChild(messageDiv);
-    input.innerHTML = '';  // Czyści input po wysłaniu
+
+    input.innerHTML = '';  // Czyści pole tekstowe po wysłaniu
     messagesDiv.scrollTop = messagesDiv.scrollHeight;  // Przewija do ostatniej wiadomości
 }
