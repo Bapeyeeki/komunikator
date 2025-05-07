@@ -8,7 +8,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- Pasek boczny -->
         <div class="sidebar">
             <div class="logo">Komunikator</div>
             <div class="menu">
@@ -19,7 +18,6 @@
             <div class="add-channel">+ Dodaj kanał</div>
         </div>
 
-        <!-- Obszar czatu -->
         <div class="chat-area">
             <div class="chat-header">
                 <span># general</span>
@@ -30,10 +28,7 @@
             </div>
 
             <div class="message-input">
-                <!-- Input do wpisania nicku -->
                 <input type="text" id="username" class="username-input" placeholder="Twoja nazwa użytkownika">
-
-                <!-- Narzędzia formatowania -->
                 <div class="format-buttons">
                     <button id="bold" class="format-btn"><b>B</b></button>
                     <button id="underline" class="format-btn"><u>U</u></button>
@@ -45,34 +40,13 @@
         </div>
     </div>
 
-    <!-- Panel emoji -->
     <div id="emoji-picker" class="emoji-picker" style="display: none;">
-    <button class="emoji-btn">😊</button>
-    <button class="emoji-btn">😂</button>
-    <button class="emoji-btn">😍</button>
-    <button class="emoji-btn">👍</button>
-    <button class="emoji-btn">😢</button>
-    <button class="emoji-btn">😎</button>
-    <button class="emoji-btn">😜</button>
-    <button class="emoji-btn">🤔</button>
-    <button class="emoji-btn">😇</button>
-    <button class="emoji-btn">🙌</button>
-    <button class="emoji-btn">🥺</button>
-    <button class="emoji-btn">💩</button>
-    <button class="emoji-btn">❤️</button>
-    <button class="emoji-btn">🥳</button>
-    <button class="emoji-btn">😻</button>
-    <button class="emoji-btn">💀</button>
-    <button class="emoji-btn">👋</button>  
-    <button class="emoji-btn">✋</button>  
-    <button class="emoji-btn">💃</button> 
-    <button class="emoji-btn">🕺</button> 
-    <button class="emoji-btn">🤷‍♂️</button>  
-    <button class="emoji-btn">🤷‍♀️</button>  
-    <button class="emoji-btn">🤩</button>  
+        <button class="emoji-btn">😊</button>
+        <button class="emoji-btn">😂</button>
+        <button class="emoji-btn">😍</button>
+        <button class="emoji-btn">👍</button>
     </div>
 
-</div>
     <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
     <script src="script.js"></script>
 </body>

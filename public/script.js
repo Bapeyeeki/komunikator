@@ -1,8 +1,6 @@
-// Statusy formatowania
 let isBoldActive = false;
 let isUnderlineActive = false;
 
-// Elementy DOM
 const boldBtn = document.getElementById('bold');
 const underlineBtn = document.getElementById('underline');
 const emojiBtn = document.getElementById('emoji');
@@ -11,28 +9,23 @@ const inputText = document.querySelector('.input-text');
 const usernameInput = document.getElementById('username');
 const messagesDiv = document.getElementById('messages');
 
-// -------------------- FORMATOWANIE --------------------
-
-// Pogrubienie
+// Formatowanie
 boldBtn.addEventListener('click', () => {
     isBoldActive = !isBoldActive;
     document.execCommand('bold');
     boldBtn.classList.toggle('active', isBoldActive);
 });
 
-// Podkreślenie
 underlineBtn.addEventListener('click', () => {
     isUnderlineActive = !isUnderlineActive;
     document.execCommand('underline');
     underlineBtn.classList.toggle('active', isUnderlineActive);
 });
 
-// Emotki - pokaż/ukryj
 emojiBtn.addEventListener('click', () => {
     emojiPicker.style.display = emojiPicker.style.display === 'block' ? 'none' : 'block';
 });
 
-// Wstawienie emotki
 document.querySelectorAll('.emoji-btn').forEach(button => {
     button.addEventListener('click', () => {
         inputText.focus();
@@ -41,7 +34,6 @@ document.querySelectorAll('.emoji-btn').forEach(button => {
     });
 });
 
-// Wstawianie w miejscu kursora
 function insertAtCaret(content) {
     const sel = window.getSelection();
     if (!sel.rangeCount) return;
@@ -54,9 +46,7 @@ function insertAtCaret(content) {
     sel.addRange(range);
 }
 
-// -------------------- WIADOMOŚCI --------------------
-
-// Wczytaj wiadomości z bazy na start
+// Ładowanie wiadomości
 window.onload = loadMessages;
 
 function loadMessages() {
@@ -68,7 +58,7 @@ function loadMessages() {
         });
 }
 
-// Wyślij wiadomość
+// Wysyłanie wiadomości
 function sendMessage() {
     const username = usernameInput.value.trim();
     const message = inputText.innerHTML.trim();
@@ -86,9 +76,8 @@ function sendMessage() {
     inputText.innerHTML = '';
 }
 
-// -------------------- PUSHER – NASŁUCH --------------------
-
-const pusher = new Pusher('d48989b62b3e217f5781', {
+// Pusher - nasłuch na nowe wiadomości
+const pusher = new Pusher('YOUR_APP_KEY', {
     cluster: 'eu'
 });
 
@@ -101,7 +90,6 @@ channel.bind('new-message', function (data) {
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
 });
 
-// Formatowanie czasu
 function formatTime(dateStr) {
     const date = new Date(dateStr);
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });

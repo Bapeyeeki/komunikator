@@ -9,10 +9,9 @@ try {
     $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($messages as $msg) {
-        // Formatowanie daty
         $time = date('H:i', strtotime($msg['created_at']));
         $user = htmlspecialchars($msg['username']);
-        $text = $msg['message']; // zakładamy, że zawiera już HTML (np. <b>)
+        $text = $msg['message'];  // Zakładając, że wiadomości mogą zawierać HTML
 
         echo "<div class='message'>";
         echo "<span class='user'>{$user}:</span> {$text} <span class='time'>{$time}</span>";
