@@ -102,14 +102,24 @@ setInterval(loadMessages, 2000);
 // Pierwsze załadowanie wiadomości po załadowaniu strony
 window.onload = loadMessages;
 
-// Funkcja do ładowania wiadomości z bazy danych
+function convertTimestamps() {
+    document.querySelectorAll('.message .time').forEach(span => {
+        const utcTime = span.getAttribute('data-time'); // pobiera np. "2024-05-07T10:30:00+00:00"
+        if (!utcTime) return;
+
+        const date = new Date(utcTime);
+        const localTime = date.toLocaleString(); // format lokalny użytkownika
+        span.textContent = ` (${localTime})`;
+    });
+}
+// Uruchom po załadowaniu wiadomości
 function loadMessages() {
     fetch('get_messages.php')
         .then(response => response.text())
         .then(data => {
             const messagesDiv = document.getElementById('messages');
             messagesDiv.innerHTML = data;
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;  // Przewija do ostatniej wiadomości
-        })
-        .catch(err => console.error('Błąd podczas ładowania wiadomości:', err));
+            convertTimestamps(); // Przelicz czas po wczytaniu wiadomości
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        });
 }

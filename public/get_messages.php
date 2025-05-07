@@ -1,5 +1,6 @@
 <?php
-require_once 'db.php'; // Ładujemy klasę połączenia z bazą danych
+require_once 'db.php';
+ // Ładujemy klasę połączenia z bazą danych
 
 // Tworzymy instancję klasy Database
 $db = new Database();
@@ -12,10 +13,7 @@ $stmt->execute();
 
 // Wyświetlanie wiadomości
 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-    echo "<div class='message'>";
-    echo "<span class='user'>" . htmlspecialchars($row['username']) . ":</span> ";
-    echo htmlspecialchars($row['message']);
-    echo " <span class='timestamp'>[" . $row['created_at'] . "]</span>";
-    echo "</div>";
+    $isoTime = date('c', strtotime($row['created_at'])); // np. 2024-05-07T10:30:00+00:00
+    echo "<div class='message'><span class='user'>{$row['username']}:</span> {$row['message']} <span class='time' data-time='{$isoTime}'></span></div>";
 }
 ?>
