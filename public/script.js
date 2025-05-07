@@ -1,6 +1,7 @@
 // Statusy przycisków formatowania
 let isBoldActive = false;
 let isUnderlineActive = false;
+let currentChannel = 'general'; // Domyślnie #general
 
 // Elementy DOM
 const boldBtn = document.getElementById('bold');
@@ -72,6 +73,7 @@ function loadMessages() {
 function sendMessage() {
     const username = usernameInput.value.trim();
     const message = inputText.innerHTML.trim();
+    formData.append('channel', currentChannel);
 
     // Pobieramy aktualny czas użytkownika
     const userTime = new Date();  // Czas lokalny użytkownika
@@ -131,3 +133,42 @@ function formatTime(dateStr) {
 
     return date.toLocaleTimeString([], options); 
 }
+
+document.querySelectorAll('.channel').forEach(channel => {
+    channel.addEventListener('click', () => {
+        currentChannel = channel.dataset.channel;
+        document.querySelector('.chat-header span').textContent = `# ${currentChannel}`;
+        loadMessages();
+    });
+});
+
+channel.bind('new-message', function(data) {
+    if (data.channel !== currentChannel) return; // Pomiń jeśli to nie nasz kanał
+
+    const msg = document.createElement('div');
+    msg.classList.add('message');
+    msg.innerHTML = `<span class="user">${data.username}:</span> ${data.message} <span class="time">${formatTime(data.created_at)}</span>`;
+    messagesDiv.appendChild(msg);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+});
+
+document.querySelector('.add-channel').addEventListener('click', () => {
+    const newChannel = prompt("Podaj nazwę nowego kanału:");
+    if (!newChannel) return;
+
+    const channelName = newChannel.trim().toLowerCase().replace(/\s+/g, '-');
+    if (!channelName) return;
+
+    const channelDiv = document.createElement('div');
+    channelDiv.classList.add('channel');
+    channelDiv.setAttribute('data-channel', channelName);
+    channelDiv.textContent = `# ${channelName}`;
+    channelDiv.addEventListener('click', () => {
+        currentChannel = channelName;
+        document.querySelector('.chat-header span').textContent = `# ${currentChannel}`;
+        loadMessages();
+    });
+
+    document.querySelector('.menu').appendChild(channelDiv);
+});
+

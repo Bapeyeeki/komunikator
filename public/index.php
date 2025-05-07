@@ -11,9 +11,10 @@
         <div class="sidebar">
             <div class="logo">Komunikator</div>
             <div class="menu">
-                <div class="channel"># general</div>
-                <div class="channel"># projekty</div>
-                <div class="channel"># wydarzenia</div>
+            <div class="channel" data-channel="general"># general</div>
+            <div class="channel" data-channel="projekty"># projekty</div>
+            <div class="channel" data-channel="wydarzenia"># wydarzenia</div>
+
             </div>
             <div class="add-channel">+ Dodaj kanał</div>
         </div>
