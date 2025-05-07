@@ -60,5 +60,29 @@ function loadMessages() {
 }
 
 // Autoładowanie wiadomości co 2 sekundy
-setInterval(loadMessages, 2000);
-window.onload = loadMessages;
+//setInterval(loadMessages, 2000);
+//window.onload = loadMessages;
+
+
+function sendMessage() {
+    const input = document.querySelector('.input-text');
+    const messageText = input.value.trim();
+
+    if (!messageText) return;
+
+    const messagesDiv = document.getElementById('messages');
+
+    // Tworzymy nowy element wiadomości
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'message user1';
+    messageDiv.innerHTML = `<span class="user">Ty:</span> ${messageText}`;
+
+    // Dodajemy wiadomość do kontenera wiadomości
+    messagesDiv.appendChild(messageDiv);
+
+    // Czyścimy pole tekstowe
+    input.value = '';
+
+    // Przewijamy na dół
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}

@@ -25,7 +25,7 @@
                 <span># general</span>
             </div>
 
-            <div class="messages">
+            <div id="messages" class="messages">
                 <div class="message user1">
                     <span class="user">Janek:</span> Cześć! Jak się macie?
                 </div>
@@ -42,8 +42,8 @@
                     <button id="emoji" class="format-btn">😊</button>
                 </div>
                 <textarea placeholder="Napisz wiadomość..." class="input-text"></textarea>
-                <button class="send-button">Wyślij</button>
-            </div>
+                <button class="send-button" onclick="sendMessage()">Wyślij</button>
+                </div>
         </div>
     </div>
 
