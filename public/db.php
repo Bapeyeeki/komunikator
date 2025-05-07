@@ -14,6 +14,7 @@ class Database {
                 $this->password
             );
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->conn->exec("SET time_zone = 'Europe/Warsaw'");
         } catch(PDOException $e) {
             echo json_encode(['error' => 'Błąd połączenia: ' . $e->getMessage()]);
             exit;
