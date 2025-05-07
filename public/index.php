@@ -25,24 +25,40 @@
                 <span># general</span>
             </div>
 
+<<<<<<< HEAD
             <div id="messages" class="messages">
                 <!-- Wiadomości będą pojawiać się tutaj -->
+=======
+            <!-- Kontener na wiadomości -->
+            <div class="messages" id="messages">
+                <!-- Wiadomości będą dynamicznie ładowane przez JS -->
+>>>>>>> 2cde95f8617b93fde80ded93dc04101d6a259681
             </div>
 
             <div class="message-input">
+                <!-- Input do wpisania nicku -->
+                <input type="text" id="username" class="username-input" placeholder="Twoja nazwa użytkownika">
+
                 <!-- Narzędzia formatowania -->
                 <div class="format-buttons">
                     <button id="bold" class="format-btn"><b>B</b></button>
                     <button id="underline" class="format-btn"><u>U</u></button>
                     <button id="emoji" class="format-btn">😊</button>
                 </div>
+<<<<<<< HEAD
                 <div class="input-text" contenteditable="true" placeholder="Napisz wiadomość..."></div>
+=======
+
+                <!-- Pole do wpisania wiadomości -->
+                <textarea placeholder="Napisz wiadomość..." class="input-text"></textarea>
+>>>>>>> 2cde95f8617b93fde80ded93dc04101d6a259681
                 <button class="send-button" onclick="sendMessage()">Wyślij</button>
             </div>
         </div>
     </div>
 
-    <div id="emoji-picker" class="emoji-picker">
+    <!-- Panel emoji -->
+    <div id="emoji-picker" class="emoji-picker" style="display: none;">
         <button class="emoji-btn">😊</button>
         <button class="emoji-btn">😂</button>
         <button class="emoji-btn">😍</button>

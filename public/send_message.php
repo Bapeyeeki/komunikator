@@ -1,13 +1,17 @@
 <?php
+require_once 'db.php'; // połączenie z bazą
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    require 'db.php';
+    $username = trim($_POST['username'] ?? 'Anon');
+    $message = trim($_POST['message'] ?? '');
+
+    if ($message === '') exit;
+
     $db = new Database();
     $conn = $db->getConnection();
 
-    $username = htmlspecialchars($_POST['username']);
-    $message = htmlspecialchars($_POST['message']);
-
-    $stmt = $conn->prepare("INSERT INTO Messages (username, message) VALUES (:username, :message)");
+    // Zapisywanie wiadomości
+    $stmt = $conn->prepare("INSERT INTO messages (username, message, created_at) VALUES (:username, :message, NOW())");
     $stmt->bindParam(':username', $username);
     $stmt->bindParam(':message', $message);
     $stmt->execute();
