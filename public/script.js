@@ -68,8 +68,7 @@ function insertAtCaret(content) {
 // Funkcja wysyłania wiadomości
 function sendMessage() {
     const username = document.getElementById('username').value;  // Pobranie nazwy użytkownika
-    const input = document.querySelector('.input-text');
-    const messageHTML = input.innerHTML.trim();
+    const messageHTML = inputText.innerHTML.trim();  // Pobranie treści wiadomości w HTML
 
     if (!messageHTML || !username) return;  // Sprawdzamy, czy wiadomość i nazwa użytkownika nie są puste
 
@@ -81,6 +80,36 @@ function sendMessage() {
 
     messagesDiv.appendChild(messageDiv);
 
-    input.innerHTML = '';  // Czyści pole tekstowe po wysłaniu
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;  // Przewija do ostatniej wiadomości
+    // Wysłanie wiadomości do serwera (PHP)
+    const formData = new FormData();
+    formData.append('username', username);
+    formData.append('message', messageHTML);
+
+    fetch('send_message.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(() => {
+        inputText.innerHTML = '';  // Czyści pole tekstowe po wysłaniu
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;  // Przewija do ostatniej wiadomości
+    })
+    .catch(err => console.error('Błąd podczas wysyłania wiadomości:', err));
+}
+
+// Automatyczne ładowanie wiadomości co 2 sekundy
+setInterval(loadMessages, 2000);
+
+// Pierwsze załadowanie wiadomości po załadowaniu strony
+window.onload = loadMessages;
+
+// Funkcja do ładowania wiadomości z bazy danych
+function loadMessages() {
+    fetch('get_messages.php')
+        .then(response => response.text())
+        .then(data => {
+            const messagesDiv = document.getElementById('messages');
+            messagesDiv.innerHTML = data;
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;  // Przewija do ostatniej wiadomości
+        })
+        .catch(err => console.error('Błąd podczas ładowania wiadomości:', err));
 }

@@ -1,19 +1,26 @@
 <?php
-require_once 'db.php'; // połączenie z bazą
+require_once 'db.php'; // Ładujemy klasę połączenia z bazą danych
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = trim($_POST['username'] ?? 'Anon');
-    $message = trim($_POST['message'] ?? '');
+// Tworzymy instancję klasy Database
+$db = new Database();
+$conn = $db->getConnection();
 
-    if ($message === '') exit;
+// Pobieranie danych z formularza
+$username = $_POST['username'];
+$message = $_POST['message'];
 
-    $db = new Database();
-    $conn = $db->getConnection();
+// Zapytanie SQL do wstawienia wiadomości
+$sql = "INSERT INTO messages (username, message) VALUES (:username, :message)";
+$stmt = $conn->prepare($sql);
 
-    // Zapisywanie wiadomości
-    $stmt = $conn->prepare("INSERT INTO messages (username, message, created_at) VALUES (:username, :message, NOW())");
-    $stmt->bindParam(':username', $username);
-    $stmt->bindParam(':message', $message);
-    $stmt->execute();
+// Bindowanie wartości
+$stmt->bindParam(':username', $username);
+$stmt->bindParam(':message', $message);
+
+// Wykonanie zapytania
+if ($stmt->execute()) {
+    echo "Wiadomość została wysłana!";
+} else {
+    echo "Wystąpił błąd podczas wysyłania wiadomości.";
 }
 ?>
