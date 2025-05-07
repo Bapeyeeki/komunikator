@@ -1,28 +1,44 @@
 <?php
-require_once 'db.php';
+require_once 'db.php'; // Wczytanie pliku z połączeniem z bazą danych
 require __DIR__ . '/..//vendor/autoload.php'; // Pusher autoloader
+
+use Dotenv\Dotenv;
 use Pusher\Pusher;
 
+// Wczytanie zmiennych środowiskowych z pliku .env
+$dotenv = Dotenv::createImmutable(__DIR__ . '/..'); // Ścieżka do katalogu z plikiem .env
+$dotenv->load();
+
+// Odczyt danych z formularza POST
 $username = $_POST['username'] ?? '';
 $message = $_POST['message'] ?? '';
 $created_at = $_POST['created_at'] ?? date('Y-m-d H:i:s');
 
+// Jeśli data jest w formacie ISO 8601, przekonwertuj ją
+if (strpos($created_at, 'T') !== false) {
+    $dt = new DateTime($created_at);
+    $created_at = $dt->format('Y-m-d H:i:s');
+}
+
+// Sprawdzanie, czy wymagane dane są dostępne
 if (!$username || !$message) {
     http_response_code(400);
     echo json_encode(['error' => 'Brak danych']);
     exit;
 }
 
+// Konfiguracja Pusher z zmiennymi środowiskowymi
 $pusher = new Pusher(
-    'd48989b62b3e217f5781',
-    '41eeb8c31088c1c65a25',
-    '1987996',
+    $_ENV['PUSHER_APP_KEY'],       // Klucz aplikacji Pusher
+    $_ENV['PUSHER_APP_SECRET'],    // Sekret aplikacji Pusher
+    $_ENV['PUSHER_APP_ID'],        // ID aplikacji Pusher
     [
-        'cluster' => 'eu',
+        'cluster' => $_ENV['PUSHER_APP_CLUSTER'], // Cluster Pusher
         'useTLS' => true
     ]
 );
 
+// Wysłanie wiadomości do Pushera
 $pusher->trigger('chat', 'new-message', [
     'username' => $username,
     'message' => $message,
@@ -30,15 +46,22 @@ $pusher->trigger('chat', 'new-message', [
 ]);
 
 try {
+    // Połączenie z bazą danych
     $db = new Database();
     $conn = $db->getConnection();
 
-    $stmt = $conn->prepare("INSERT INTO messages (username, message) VALUES (:username, :message)");
+    // Wstawienie wiadomości do bazy danych
+    $stmt = $conn->prepare("INSERT INTO messages (username, message, created_at) VALUES (:username, :message, :created_at)");
     $stmt->execute([
         ':username' => $username,
-        ':message' => $message
+        ':message' => $message,
+        ':created_at' => $created_at
     ]);
+
+    // Zwrócenie odpowiedzi o sukcesie
     echo json_encode(['success' => true]);
 } catch (PDOException $e) {
+    // Obsługa błędu bazy danych
     echo json_encode(['error' => 'Błąd bazy danych: ' . $e->getMessage()]);
 }
+?>
