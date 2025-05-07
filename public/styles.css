@@ -145,6 +145,7 @@ body {
 }
 
 /* Panel emotek */
+/* Panel emotek */
 .emoji-picker {
     display: none;
     position: absolute;
@@ -166,3 +167,4 @@ body {
     background-color: transparent;
     border: none;
 }
+

@@ -46,12 +46,14 @@ document.querySelectorAll('.emoji-btn').forEach(button => {
 
 // Wstawianie emotek w edytorze
 function insertAtCaret(content) {
+    const input = document.querySelector('.input-text');
     const sel = window.getSelection();
+    
     if (!sel.rangeCount) return;
 
     const range = sel.getRangeAt(0);
-    range.deleteContents();
-    range.insertNode(document.createTextNode(content));
+    range.deleteContents(); // Usuwa obecny tekst w wybranym zakresie
+    range.insertNode(document.createTextNode(content)); // Wstawia emoji lub tekst
 
     // Przesuń kursor za wstawionym emoji
     range.setStartAfter(range.endContainer);
