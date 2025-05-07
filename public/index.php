@@ -26,12 +26,7 @@
             </div>
 
             <div id="messages" class="messages">
-                <div class="message user1">
-                    <span class="user">Janek:</span> Cześć! Jak się macie?
-                </div>
-                <div class="message user2">
-                    <span class="user">Anna:</span> Wszystko w porządku, a ty?
-                </div>
+                <!-- Wiadomości będą pojawiać się tutaj -->
             </div>
 
             <div class="message-input">
@@ -41,9 +36,9 @@
                     <button id="underline" class="format-btn"><u>U</u></button>
                     <button id="emoji" class="format-btn">😊</button>
                 </div>
-                <textarea placeholder="Napisz wiadomość..." class="input-text"></textarea>
+                <div class="input-text" contenteditable="true" placeholder="Napisz wiadomość..."></div>
                 <button class="send-button" onclick="sendMessage()">Wyślij</button>
-                </div>
+            </div>
         </div>
     </div>
 

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Komunikator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Pasek boczny -->
+        <div class="sidebar">
+            <div class="logo">Komunikator</div>
+            <div class="menu">
+                <div class="channel"># general</div>
+                <div class="channel"># projekty</div>
+                <div class="channel"># wydarzenia</div>
+            </div>
+            <div class="add-channel">+ Dodaj kanał</div>
+        </div>
+
+        <!-- Obszar czatu -->
+        <div class="chat-area">
+            <div class="chat-header">
+                <span># general</span>
+            </div>
+
+            <div id="messages" class="messages">
+                <!-- Wiadomości będą pojawiać się tutaj -->
+            </div>
+
+            <div class="message-input">
+                <!-- Narzędzia formatowania -->
+                <div class="format-buttons">
+                    <button id="bold" class="format-btn"><b>B</b></button>
+                    <button id="underline" class="format-btn"><u>U</u></button>
+                    <button id="emoji" class="format-btn">😊</button>
+                </div>
+                <div class="input-text" contenteditable="true" placeholder="Napisz wiadomość..."></div>
+                <button class="send-button" onclick="sendMessage()">Wyślij</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="emoji-picker" class="emoji-picker">
+        <button class="emoji-btn">😊</button>
+        <button class="emoji-btn">😂</button>
+        <button class="emoji-btn">😍</button>
+        <button class="emoji-btn">👍</button>
+        <button class="emoji-btn">😢</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+// Statusy przycisków formatowania
+let isBoldActive = false;
+let isUnderlineActive = false;
+
+// Przełączniki pogrubienia
+const boldBtn = document.getElementById('bold');
+const underlineBtn = document.getElementById('underline');
+const emojiBtn = document.getElementById('emoji');
+const emojiPicker = document.getElementById('emoji-picker');
+
+// Funkcja do przełączania pogrubienia
+boldBtn.addEventListener('click', function () {
+    isBoldActive = !isBoldActive;
+    document.execCommand('bold');
+    boldBtn.classList.toggle('active', isBoldActive);
+});
+
+// Funkcja do przełączania podkreślenia
+underlineBtn.addEventListener('click', function () {
+    isUnderlineActive = !isUnderlineActive;
+    document.execCommand('underline');
+    underlineBtn.classList.toggle('active', isUnderlineActive);
+});
+
+// Pokaz/ukryj emotki
+emojiBtn.addEventListener('click', function () {
+    emojiPicker.style.display = emojiPicker.style.display === 'block' ? 'none' : 'block';
+});
+
+// Kliknięcie na emotkę
+document.querySelectorAll('.emoji-btn').forEach(button => {
+    button.addEventListener('click', function () {
+        const emoji = button.textContent;
+        insertAtCaret(emoji);
+        emojiPicker.style.display = 'none';
+    });
+});
+
+// Wstawianie emotek
+function insertAtCaret(content) {
+    const sel = window.getSelection();
+    if (!sel.rangeCount) return;
+
+    const range = sel.getRangeAt(0);
+    range.deleteContents();
+    range.insertNode(document.createTextNode(content));
+
+    // Przesuń kursor za wstawionym emoji
+    range.setStartAfter(range.endContainer);
+    range.setEndAfter(range.endContainer);
+    sel.removeAllRanges();
+    sel.addRange(range);
+}
+
+// Wysyłanie wiadomości
+function sendMessage() {
+    const input = document.querySelector('.input-text');
+    const messageHTML = input.innerHTML.trim();
+
+    if (!messageHTML) return;
+
+    const messagesDiv = document.getElementById('messages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'message user1';
+    messageDiv.innerHTML = `<span class="user">Ty:</span> ${messageHTML}`;
+
+    messagesDiv.appendChild(messageDiv);
+    input.innerHTML = '';  // Czyści input po wysłaniu
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;  // Przewija do ostatniej wiadomości
+}
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f7fb;
+}
+
+/* Kontener główny */
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+/* Pasek boczny */
+.sidebar {
+    width: 200px;
+    background-color: #390769;
+    color: #ffffff;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.menu {
+    margin-bottom: 20px;
+}
+
+.channel {
+    padding: 10px;
+    border-bottom: 1px solid #444;
+    cursor: pointer;
+}
+
+.add-channel {
+    margin-top: auto;
+    background-color: #2f3640;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+}
+
+/* Obszar czatu */
+.chat-area {
+    flex-grow: 1;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Nagłówek czatu */
+.chat-header {
+    background-color: #390769;
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Wiadomości */
+.messages {
+    padding: 20px;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.message {
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 8px;
+    max-width: 70%;
+}
+
+.user1 {
+    background-color: #f0f0f0;
+    align-self: flex-start;
+}
+
+.user2 {
+    background-color: #e4f4e4;
+    align-self: flex-end;
+}
+
+.user {
+    font-weight: bold;
+}
+
+/* Input wiadomości */
+.message-input {
+    display: flex;
+    padding: 10px;
+    background-color: #f4f7fb;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.input-text {
+    flex-grow: 1;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    resize: none;
+    min-height: 50px;
+}
+
+/* Formatowanie */
+.format-buttons {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.format-btn {
+    background-color: #2f3640;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.format-btn.active {
+    background-color: #bbb;
+}
+
+.send-button {
+    background-color: #2f3640;
+    color: white;
+    padding: 10px 20px;
+    margin-left: 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* Panel emotek */
+.emoji-picker {
+    display: none;
+    position: absolute;
+    bottom: 60px;
+    right: 20px;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+}
+
+.emoji-btn {
+    font-size: 20px;
+    padding: 5px;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+}
+

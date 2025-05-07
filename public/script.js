@@ -1,88 +1,70 @@
-// Pogrubienie
-document.getElementById('bold').addEventListener('click', function() {
-    const textArea = document.querySelector('.input-text');
-    const selectedText = textArea.value.substring(textArea.selectionStart, textArea.selectionEnd);
-    textArea.setRangeText(`<b>${selectedText}</b>`);
+// Statusy przycisków formatowania
+let isBoldActive = false;
+let isUnderlineActive = false;
+
+// Przełączniki pogrubienia
+const boldBtn = document.getElementById('bold');
+const underlineBtn = document.getElementById('underline');
+const emojiBtn = document.getElementById('emoji');
+const emojiPicker = document.getElementById('emoji-picker');
+
+// Funkcja do przełączania pogrubienia
+boldBtn.addEventListener('click', function () {
+    isBoldActive = !isBoldActive;
+    document.execCommand('bold');
+    boldBtn.classList.toggle('active', isBoldActive);
 });
 
-// Podkreślenie
-document.getElementById('underline').addEventListener('click', function() {
-    const textArea = document.querySelector('.input-text');
-    const selectedText = textArea.value.substring(textArea.selectionStart, textArea.selectionEnd);
-    textArea.setRangeText(`<u>${selectedText}</u>`);
+// Funkcja do przełączania podkreślenia
+underlineBtn.addEventListener('click', function () {
+    isUnderlineActive = !isUnderlineActive;
+    document.execCommand('underline');
+    underlineBtn.classList.toggle('active', isUnderlineActive);
 });
 
 // Pokaz/ukryj emotki
-document.getElementById('emoji').addEventListener('click', function() {
-    const emojiPicker = document.getElementById('emoji-picker');
+emojiBtn.addEventListener('click', function () {
     emojiPicker.style.display = emojiPicker.style.display === 'block' ? 'none' : 'block';
 });
 
 // Kliknięcie na emotkę
 document.querySelectorAll('.emoji-btn').forEach(button => {
-    button.addEventListener('click', function() {
+    button.addEventListener('click', function () {
         const emoji = button.textContent;
-        const textArea = document.querySelector('.input-text');
-        textArea.value += emoji;
-        document.getElementById('emoji-picker').style.display = 'none';
+        insertAtCaret(emoji);
+        emojiPicker.style.display = 'none';
     });
 });
 
+// Wstawianie emotek
+function insertAtCaret(content) {
+    const sel = window.getSelection();
+    if (!sel.rangeCount) return;
+
+    const range = sel.getRangeAt(0);
+    range.deleteContents();
+    range.insertNode(document.createTextNode(content));
+
+    // Przesuń kursor za wstawionym emoji
+    range.setStartAfter(range.endContainer);
+    range.setEndAfter(range.endContainer);
+    sel.removeAllRanges();
+    sel.addRange(range);
+}
+
 // Wysyłanie wiadomości
 function sendMessage() {
-    const message = document.querySelector('.input-text').value.trim();
-    const username = "Anon"; // Możesz to zmienić na input
-
-    if (!message) return;
-
-    const formData = new FormData();
-    formData.append('username', username);
-    formData.append('message', message);
-
-    fetch('send_message.php', {
-        method: 'POST',
-        body: formData
-    }).then(() => {
-        document.querySelector('.input-text').value = '';
-        loadMessages();
-    });
-}
-
-// Pobieranie wiadomości
-function loadMessages() {
-    fetch('get_messages.php')
-        .then(response => response.text())
-        .then(data => {
-            const messagesDiv = document.getElementById('messages');
-            messagesDiv.innerHTML = data;
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        });
-}
-
-// Autoładowanie wiadomości co 2 sekundy
-//setInterval(loadMessages, 2000);
-//window.onload = loadMessages;
-
-
-function sendMessage() {
     const input = document.querySelector('.input-text');
-    const messageText = input.value.trim();
+    const messageHTML = input.innerHTML.trim();
 
-    if (!messageText) return;
+    if (!messageHTML) return;
 
     const messagesDiv = document.getElementById('messages');
-
-    // Tworzymy nowy element wiadomości
     const messageDiv = document.createElement('div');
     messageDiv.className = 'message user1';
-    messageDiv.innerHTML = `<span class="user">Ty:</span> ${messageText}`;
+    messageDiv.innerHTML = `<span class="user">Ty:</span> ${messageHTML}`;
 
-    // Dodajemy wiadomość do kontenera wiadomości
     messagesDiv.appendChild(messageDiv);
-
-    // Czyścimy pole tekstowe
-    input.value = '';
-
-    // Przewijamy na dół
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    input.innerHTML = '';  // Czyści input po wysłaniu
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;  // Przewija do ostatniej wiadomości
 }

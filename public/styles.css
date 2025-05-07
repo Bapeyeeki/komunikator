@@ -114,17 +114,7 @@ body {
     min-height: 50px;
 }
 
-.send-button {
-    background-color: #2f3640;
-    color: white;
-    padding: 10px 20px;
-    margin-left: 10px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-/* Narzędzia formatowania */
+/* Formatowanie */
 .format-buttons {
     display: flex;
     gap: 10px;
@@ -136,6 +126,20 @@ body {
     color: white;
     border: none;
     padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.format-btn.active {
+    background-color: #bbb;
+}
+
+.send-button {
+    background-color: #2f3640;
+    color: white;
+    padding: 10px 20px;
+    margin-left: 10px;
+    border: none;
     border-radius: 8px;
     cursor: pointer;
 }
@@ -161,18 +165,4 @@ body {
     cursor: pointer;
     background-color: transparent;
     border: none;
-}
-
-/* Przyciski formatowania */
-.format-btn {
-    font-size: 16px;
-    padding: 5px;
-    cursor: pointer;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: transparent;
-}
-
-.format-btn:hover {
-    background-color: #ddd;
 }
