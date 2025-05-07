@@ -13,9 +13,9 @@ if (!$username || !$message) {
 }
 
 $pusher = new Pusher(
-    'YOUR_APP_KEY',
-    'YOUR_APP_SECRET',
-    'YOUR_APP_ID',
+    'd48989b62b3e217f5781',
+    '41eeb8c31088c1c65a25"',
+    '1987996',
     [
         'cluster' => 'eu',
         'useTLS' => true

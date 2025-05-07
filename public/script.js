@@ -68,22 +68,28 @@ function loadMessages() {
         });
 }
 
-// Wyślij wiadomość
+// Funkcja do wysyłania wiadomości
 function sendMessage() {
     const username = usernameInput.value.trim();
     const message = inputText.innerHTML.trim();
+
+    // Pobieramy aktualny czas użytkownika
+    const userTime = new Date();  // Czas lokalny użytkownika
+    const localTime = userTime.toISOString();  // Zamiana na ISO string (np. 2025-05-07T13:30:00.000Z)
+
     if (!message || !username) return;
 
     const formData = new FormData();
     formData.append('username', username);
     formData.append('message', message);
+    formData.append('created_at', localTime);  // Przesyłamy lokalny czas użytkownika
 
     fetch('send_message.php', {
         method: 'POST',
         body: formData
     });
 
-    inputText.innerHTML = '';
+    inputText.innerHTML = '';  // Czyścimy pole wiadomości
 }
 
 // -------------------- PUSHER – NASŁUCH --------------------
