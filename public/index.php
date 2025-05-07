@@ -47,12 +47,32 @@
 
     <!-- Panel emoji -->
     <div id="emoji-picker" class="emoji-picker" style="display: none;">
-        <button class="emoji-btn">😊</button>
-        <button class="emoji-btn">😂</button>
-        <button class="emoji-btn">😍</button>
-        <button class="emoji-btn">👍</button>
-        <button class="emoji-btn">😢</button>
+    <button class="emoji-btn">😊</button>
+    <button class="emoji-btn">😂</button>
+    <button class="emoji-btn">😍</button>
+    <button class="emoji-btn">👍</button>
+    <button class="emoji-btn">😢</button>
+    <button class="emoji-btn">😎</button>
+    <button class="emoji-btn">😜</button>
+    <button class="emoji-btn">🤔</button>
+    <button class="emoji-btn">😇</button>
+    <button class="emoji-btn">🙌</button>
+    <button class="emoji-btn">🥺</button>
+    <button class="emoji-btn">💩</button>
+    <button class="emoji-btn">❤️</button>
+    <button class="emoji-btn">🥳</button>
+    <button class="emoji-btn">😻</button>
+    <button class="emoji-btn">💀</button>
+    <button class="emoji-btn">👋</button>  
+    <button class="emoji-btn">✋</button>  
+    <button class="emoji-btn">💃</button> 
+    <button class="emoji-btn">🕺</button> 
+    <button class="emoji-btn">🤷‍♂️</button>  
+    <button class="emoji-btn">🤷‍♀️</button>  
+    <button class="emoji-btn">🤩</button>  
     </div>
+
+</div>
 
     <script src="script.js"></script>
 </body>
