@@ -1,15 +1,18 @@
 <?php
-require 'db.php';
+require_once 'db.php'; // połączenie z bazą
+
 $db = new Database();
 $conn = $db->getConnection();
 
-$stmt = $conn->prepare("SELECT username, message, timestamp FROM Messages ORDER BY timestamp ASC");
-$stmt->execute();
+// Pobieramy wszystkie wiadomości z bazy
+$stmt = $conn->query("SELECT username, message, created_at FROM messages ORDER BY created_at ASC");
 $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+// Wyświetlanie wiadomości
 foreach ($messages as $msg) {
-    echo "<div class='message'><span class='user'>" . 
-         htmlspecialchars($msg['username']) . 
-         ":</span> " . htmlspecialchars($msg['message']) . "</div>";
+    echo '<div class="message">';
+    echo '<span class="user">' . htmlspecialchars($msg['username']) . ':</span> ';
+    echo nl2br(htmlspecialchars($msg['message']));
+    echo '</div>';
 }
 ?>

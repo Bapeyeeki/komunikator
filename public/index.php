@@ -25,29 +25,31 @@
                 <span># general</span>
             </div>
 
-            <div id="messages" class="messages">
-                <div class="message user1">
-                    <span class="user">Janek:</span> Cześć! Jak się macie?
-                </div>
-                <div class="message user2">
-                    <span class="user">Anna:</span> Wszystko w porządku, a ty?
-                </div>
+            <!-- Kontener na wiadomości -->
+            <div class="messages" id="messages">
+                <!-- Wiadomości będą dynamicznie ładowane przez JS -->
             </div>
 
             <div class="message-input">
+                <!-- Input do wpisania nicku -->
+                <input type="text" id="username" class="username-input" placeholder="Twoja nazwa użytkownika">
+
                 <!-- Narzędzia formatowania -->
                 <div class="format-buttons">
                     <button id="bold" class="format-btn"><b>B</b></button>
                     <button id="underline" class="format-btn"><u>U</u></button>
                     <button id="emoji" class="format-btn">😊</button>
                 </div>
+
+                <!-- Pole do wpisania wiadomości -->
                 <textarea placeholder="Napisz wiadomość..." class="input-text"></textarea>
                 <button class="send-button" onclick="sendMessage()">Wyślij</button>
-                </div>
+            </div>
         </div>
     </div>
 
-    <div id="emoji-picker" class="emoji-picker">
+    <!-- Panel emoji -->
+    <div id="emoji-picker" class="emoji-picker" style="display: none;">
         <button class="emoji-btn">😊</button>
         <button class="emoji-btn">😂</button>
         <button class="emoji-btn">😍</button>
