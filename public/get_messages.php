@@ -9,9 +9,8 @@ try {
     $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($messages as $msg) {
-        // Formatowanie daty (nie zmieniamy strefy czasowej, bo czas jest lokalny)
-        $datetime = new DateTime($msg['created_at']); // Czas już jest w lokalnej strefie użytkownika
-        $local_time = $datetime->format('H:i'); // Formatowanie godziny i minut
+        $datetime = new DateTime($msg['created_at']);
+        $local_time = $datetime->format('H:i');  // Formatowanie godziny
 
         $user = htmlspecialchars($msg['username']);
         $text = htmlspecialchars($msg['message']);  // Zapewniamy bezpieczeństwo przed HTML w wiadomości
@@ -23,4 +22,6 @@ try {
 } catch (PDOException $e) {
     echo "<div class='error'>Błąd bazy danych: " . $e->getMessage() . "</div>";
 }
+
+
 ?>

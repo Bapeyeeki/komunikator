@@ -61,31 +61,34 @@ function insertAtCaret(content) {
 window.onload = loadMessages;
 
 function loadMessages() {
-    fetch('get_messages.php')
+    fetch('get_messages.php') // Wczytujemy wiadomości
         .then(res => res.text())
         .then(html => {
             messagesDiv.innerHTML = html;
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        });
+        })
+        .catch(err => console.error("Błąd ładowania wiadomości: ", err));
 }
 
 // Funkcja do wysyłania wiadomości
 function sendMessage() {
     const username = usernameInput.value.trim();
     const message = inputText.innerHTML.trim();
-    formData.append('channel', currentChannel);
-
-    // Pobieramy aktualny czas użytkownika
-    const userTime = new Date();  // Czas lokalny użytkownika
-    const localTime = userTime.toISOString();  // Zamiana na ISO string (np. 2025-05-07T13:30:00.000Z)
-
+    
     if (!message || !username) return;
 
+    // Tworzymy obiekt FormData po sprawdzeniu danych
     const formData = new FormData();
     formData.append('username', username);
     formData.append('message', message);
+    
+    // Pobieramy aktualny czas użytkownika
+    const userTime = new Date();  // Czas lokalny użytkownika
+    const localTime = userTime.toISOString();  // Zamiana na ISO string (np. 2025-05-07T13:30:00.000Z)
+    
     formData.append('created_at', localTime);  // Przesyłamy lokalny czas użytkownika
 
+    // Wyślij dane do serwera
     fetch('send_message.php', {
         method: 'POST',
         body: formData
@@ -101,7 +104,6 @@ const pusher = new Pusher('d48989b62b3e217f5781', {
 });
 
 const channel = pusher.subscribe('chat');
-// Nasłuchiwanie na wiadomości przychodzące przez Pusher
 channel.bind('new-message', function(data) {
     const msg = document.createElement('div');
     msg.classList.add('message');
