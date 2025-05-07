@@ -7,7 +7,7 @@
 #
 # Host: v.je (MySQL 11.7.2-MariaDB-ubu2404)
 # Database: komunikator
-# Generation Time: 2025-05-07 12:40:51 +0000
+# Generation Time: 2025-05-07 13:00:50 +0000
 # ************************************************************
 
 
@@ -29,7 +29,7 @@ CREATE TABLE `messages` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(50) NOT NULL,
   `message` text NOT NULL,
-  `created_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `created_at` datetime DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
@@ -38,11 +38,10 @@ LOCK TABLES `messages` WRITE;
 
 INSERT INTO `messages` (`id`, `username`, `message`, `created_at`)
 VALUES
-	(2,'fdfdf','dfdfdfd','2025-05-07 12:28:00'),
-	(3,'sdsd','sdsdsdsd','2025-05-07 12:28:27'),
-	(4,'tata','sdsdsdsdsd','2025-05-07 12:29:05'),
-	(5,'mama','dsdsdsd','2025-05-07 12:30:56'),
-	(6,'dsdsdsd','sdsdsdsd','2025-05-07 12:40:12');
+	(1,'dsds','dsdsdsd','2025-05-07 12:55:27'),
+	(2,'dfdfd','fdfdfdfdf','2025-05-07 12:56:23'),
+	(3,'dfdf','dfdfdfdfdfdf','2025-05-07 12:57:07'),
+	(4,'dffd','dfdfdfdf','2025-05-07 12:58:26');
 
 /*!40000 ALTER TABLE `messages` ENABLE KEYS */;
 UNLOCK TABLES;
