@@ -5,11 +5,7 @@ try {
     $db = new Database();
     $conn = $db->getConnection();
 
-    $channel = $_GET['channel'] ?? 'general';
-
-    $stmt = $conn->prepare("SELECT username, message, created_at FROM messages WHERE channel = :channel ORDER BY created_at ASC");
-    $stmt->execute(['channel' => $channel]);
-
+    $stmt = $conn->query("SELECT username, message, created_at FROM messages ORDER BY created_at ASC");
     $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($messages as $msg) {
@@ -17,7 +13,7 @@ try {
         $local_time = $datetime->format('H:i');  // Formatowanie godziny
 
         $user = htmlspecialchars($msg['username']);
-        $text = strip_tags($msg['message'], '<b><i><u><strong><em>');
+        $text = $msg['message'];
 
         echo "<div class='message'>";
         echo "<span class='user'>{$user}:</span> {$text} <span class='time'>{$local_time}</span>";
