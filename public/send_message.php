@@ -14,6 +14,7 @@ try {
     $username = $_POST['username'] ?? '';
     $message = $_POST['message'] ?? '';
     $created_at = $_POST['created_at'] ?? date('Y-m-d H:i:s');
+    $channel = $_POST['channel'] ?? 'general';
 
     // Jeśli data jest w formacie ISO 8601, przekonwertuj ją
     if (strpos($created_at, 'T') !== false) {
@@ -61,12 +62,15 @@ try {
     $conn = $db->getConnection();
 
     // Wstawienie wiadomości do bazy danych
-    $stmt = $conn->prepare("INSERT INTO messages (username, message, created_at) VALUES (:username, :message, :created_at)");
+    $stmt = $conn->prepare("INSERT INTO messages (username, message, created_at, channel) 
+                        VALUES (:username, :message, :created_at, :channel)");
     $stmt->execute([
         ':username' => $username,
         ':message' => $message,
-        ':created_at' => $created_at
+        ':created_at' => $created_at,
+        ':channel' => $channel
     ]);
+
 
     // Zwrócenie odpowiedzi o sukcesie
     echo json_encode(['success' => true]);

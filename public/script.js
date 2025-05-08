@@ -1,7 +1,7 @@
 // Statusy przycisków formatowania
 let isBoldActive = false;
 let isUnderlineActive = false;
-let currentChannel = 'general'; // Domyślnie #general
+let currentChannel = localStorage.getItem('currentChannel') || 'general';
 
 // Elementy DOM
 const boldBtn = document.getElementById('bold');
@@ -206,3 +206,5 @@ document.querySelector('.add-channel').addEventListener('click', () => {
 
     document.querySelector('.menu').appendChild(channelDiv);
 });
+
+
