@@ -13,9 +13,9 @@
             <div class="logo">Messenger</div>
             
             <div class="menu">
-                <div class="channel active" data-channel="# Ogólny">Ogólny</div>
-                <div class="channel" data-channel="# Projekty">Projekty</div>
-                <div class="channel" data-channel="# Wydarzenia">Wydarzenia</div>
+                <div class="channel active" data-channel="Ogólny">Ogólny</div>
+                <div class="channel" data-channel="Projekty">Projekty</div>
+                <div class="channel" data-channel="Wydarzenia">Wydarzenia</div>
             </div>
             <div class="add-channel">Dodaj nowy czat</div>
         </div>
