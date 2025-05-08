@@ -61,8 +61,10 @@ function insertAtCaret(content) {
 window.onload = loadMessages;
 
 function loadMessages() {
-    // Dodajemy parametr kanału do żądania
-    fetch(`get_messages.php?channel=${currentChannel}`)
+    const currentUsername = usernameInput.value.trim();
+    const url = `get_messages.php?channel=${currentChannel}&user=${encodeURIComponent(currentUsername)}`;
+
+    fetch(url)
         .then(res => res.text())
         .then(html => {
             messagesDiv.innerHTML = html;
@@ -70,6 +72,8 @@ function loadMessages() {
         })
         .catch(err => console.error("Błąd ładowania wiadomości: ", err));
 }
+
+
 
 // Funkcja do wysyłania wiadomości
 function sendMessage() {
@@ -127,15 +131,20 @@ const channel = pusher.subscribe('chat');
 
 // Pojedyncza obsługa zdarzenia new-message
 channel.bind('new-message', function(data) {
-    // Sprawdzamy, czy wiadomość należy do aktualnie wybranego kanału
     if (data.channel && data.channel !== currentChannel) return;
 
     const msg = document.createElement('div');
     msg.classList.add('message');
+
+    const currentUsername = usernameInput.value.trim();
+    const isMyMessage = currentUsername === data.username;
+    msg.classList.add(isMyMessage ? 'sent' : 'received');
+
     msg.innerHTML = `<span class="user">${data.username}:</span> ${data.message} <span class="time">${formatTime(data.created_at)}</span>`;
     messagesDiv.appendChild(msg);
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
 });
+
 
 // -------------------- FUNKCJA FORMATOWANIA CZASU --------------------
 
