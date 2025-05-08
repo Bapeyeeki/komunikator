@@ -122,6 +122,28 @@ function sendMessage() {
     inputText.innerHTML = '';  // Czyścimy pole wiadomości
 }
 
+// Funkcja do zapisywania odebranych wiadomości
+function saveReceivedMessage(senderUsername, messageContent, messageTime, messageChannel) {
+    const recipientUsername = usernameInput.value.trim();
+    
+    if (!recipientUsername) return; // Jeśli nie ma odbiorcy, nie zapisujemy
+    if (senderUsername === recipientUsername) return; // Nie zapisujemy własnych wiadomości
+
+    const formData = new FormData();
+    formData.append('sender_username', senderUsername);
+    formData.append('recipient_username', recipientUsername);
+    formData.append('message', messageContent);
+    formData.append('created_at', messageTime);
+    formData.append('channel', messageChannel);
+
+    // Wysyłamy dane do serwera, aby zapisać odebraną wiadomość
+    fetch('save_received_message.php', {
+        method: 'POST',
+        body: formData
+    })
+    .catch(err => console.error("Błąd zapisywania odebranej wiadomości: ", err));
+}
+
 // Obsługa wysyłania wiadomości po naciśnięciu Enter (bez Shift)
 inputText.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -154,6 +176,11 @@ channel.bind('new-message', function(data) {
     const currentUsername = usernameInput.value.trim();
     const isMyMessage = currentUsername === data.username;
     msg.classList.add(isMyMessage ? 'sent' : 'received');
+
+    // Jeśli to wiadomość od kogoś innego, zapisz ją w bazie danych received_messages
+    if (!isMyMessage && currentUsername) {
+        saveReceivedMessage(data.username, data.message, data.created_at, data.channel || currentChannel);
+    }
 
     msg.innerHTML = `<span class="user">${data.username}:</span> ${data.message} <span class="time">${formatTime(data.created_at)}</span>`;
     messagesDiv.appendChild(msg);
@@ -230,5 +257,3 @@ document.querySelector('.add-channel').addEventListener('click', () => {
 
     document.querySelector('.menu').appendChild(channelDiv);
 });
-
-

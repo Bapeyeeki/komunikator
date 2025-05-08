@@ -50,7 +50,8 @@ try {
     $result = $pusher->trigger('chat', 'new-message', [
         'username' => $username,
         'message' => $message,
-        'created_at' => $created_at
+        'created_at' => $created_at,
+        'channel' => $channel // Dodajemy informację o kanale
     ]);
 
     if (!$result) {
@@ -61,7 +62,7 @@ try {
     $db = new Database();
     $conn = $db->getConnection();
 
-    // Wstawienie wiadomości do bazy danych
+    // Wstawienie wiadomości do bazy danych (tabela messages - dotychczasowa)
     $stmt = $conn->prepare("INSERT INTO messages (username, message, created_at, channel) 
                         VALUES (:username, :message, :created_at, :channel)");
     $stmt->execute([
@@ -70,7 +71,6 @@ try {
         ':created_at' => $created_at,
         ':channel' => $channel
     ]);
-
 
     // Zwrócenie odpowiedzi o sukcesie
     echo json_encode(['success' => true]);
@@ -83,4 +83,4 @@ try {
     http_response_code(500);
     echo json_encode(['error' => $e->getMessage()]);
 }
-?>
+?>  
