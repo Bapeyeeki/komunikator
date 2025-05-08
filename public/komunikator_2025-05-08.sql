@@ -7,7 +7,7 @@
 #
 # Host: v.je (MySQL 11.7.2-MariaDB-ubu2404)
 # Database: komunikator
-# Generation Time: 2025-05-07 13:00:50 +0000
+# Generation Time: 2025-05-08 07:10:13 +0000
 # ************************************************************
 
 
@@ -30,18 +30,25 @@ CREATE TABLE `messages` (
   `username` varchar(50) NOT NULL,
   `message` text NOT NULL,
   `created_at` datetime DEFAULT current_timestamp(),
+  `channel` varchar(100) NOT NULL DEFAULT 'general',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
 LOCK TABLES `messages` WRITE;
 /*!40000 ALTER TABLE `messages` DISABLE KEYS */;
 
-INSERT INTO `messages` (`id`, `username`, `message`, `created_at`)
+INSERT INTO `messages` (`id`, `username`, `message`, `created_at`, `channel`)
 VALUES
-	(1,'dsds','dsdsdsd','2025-05-07 12:55:27'),
-	(2,'dfdfd','fdfdfdfdf','2025-05-07 12:56:23'),
-	(3,'dfdf','dfdfdfdfdfdf','2025-05-07 12:57:07'),
-	(4,'dffd','dfdfdfdf','2025-05-07 12:58:26');
+	(1,'dsds','dsdsdsd','2025-05-07 12:55:27','general'),
+	(2,'dfdfd','fdfdfdfdf','2025-05-07 12:56:23','general'),
+	(3,'dfdf','dfdfdfdfdfdf','2025-05-07 12:57:07','general'),
+	(4,'dffd','dfdfdfdf','2025-05-07 12:58:26','general'),
+	(5,'sdasd','asdasdasdasd','2025-05-07 13:01:36','general'),
+	(6,'fdgdfgdfg','fgdfgdgdgfdfgdfgdgdfg','2025-05-07 13:01:45','general'),
+	(7,'Robert','Czesc','2025-05-08 08:59:31','general'),
+	(8,'Robert','<b>Test</b>','2025-05-08 08:59:39','general'),
+	(9,'Robert','<b><u>Test😁</u></b>','2025-05-08 09:00:01','general'),
+	(10,'wda','as<b>asdasdasd</b>','2025-05-08 09:00:29','general');
 
 /*!40000 ALTER TABLE `messages` ENABLE KEYS */;
 UNLOCK TABLES;

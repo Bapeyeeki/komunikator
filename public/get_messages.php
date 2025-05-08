@@ -5,7 +5,11 @@ try {
     $db = new Database();
     $conn = $db->getConnection();
 
-    $stmt = $conn->query("SELECT username, message, created_at FROM messages ORDER BY created_at ASC");
+    $channel = $_GET['channel'] ?? 'general';
+
+    $stmt = $conn->prepare("SELECT username, message, created_at FROM messages WHERE channel = :channel ORDER BY created_at ASC");
+    $stmt->execute(['channel' => $channel]);
+
     $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($messages as $msg) {
