@@ -61,7 +61,8 @@ function insertAtCaret(content) {
 window.onload = loadMessages;
 
 function loadMessages() {
-    fetch('get_messages.php') // Wczytujemy wiadomości
+    // Dodajemy parametr kanału do żądania
+    fetch(`get_messages.php?channel=${currentChannel}`)
         .then(res => res.text())
         .then(html => {
             messagesDiv.innerHTML = html;
@@ -81,12 +82,17 @@ function sendMessage() {
     const formData = new FormData();
     formData.append('username', username);
     formData.append('message', message);
+    formData.append('channel', currentChannel); // Dodajemy informację o kanale
     
     // Pobieramy aktualny czas użytkownika
     const userTime = new Date();  // Czas lokalny użytkownika
-    const localTime = userTime.toISOString();  // Zamiana na ISO string (np. 2025-05-07T13:30:00.000Z)
     
-    formData.append('created_at', localTime);  // Przesyłamy lokalny czas użytkownika
+    // Dodajemy offset strefy czasowej (-2 godziny), aby skompensować różnicę
+    // gdy serwer PHP dodaje strefę czasową
+    const offsetTime = new Date(userTime.getTime() + 2 * 60 * 60 * 1000);
+    const localTime = offsetTime.toISOString();  // Zamiana na ISO string
+    
+    formData.append('created_at', localTime);  // Przesyłamy skorygowany czas użytkownika
 
     // Wyślij dane do serwera
     fetch('send_message.php', {
@@ -97,6 +103,20 @@ function sendMessage() {
     inputText.innerHTML = '';  // Czyścimy pole wiadomości
 }
 
+// Obsługa wysyłania wiadomości po naciśnięciu Enter (bez Shift)
+inputText.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault(); // Zapobiegamy domyślnej akcji (nowa linia)
+        sendMessage();
+    }
+});
+
+// Dodajemy obsługę przycisku do wysyłania (jeśli istnieje w HTML)
+const sendButton = document.querySelector('.send-button');
+if (sendButton) {
+    sendButton.addEventListener('click', sendMessage);
+}
+
 // -------------------- PUSHER – NASŁUCH --------------------
 
 const pusher = new Pusher('d48989b62b3e217f5781', {
@@ -104,7 +124,12 @@ const pusher = new Pusher('d48989b62b3e217f5781', {
 });
 
 const channel = pusher.subscribe('chat');
+
+// Pojedyncza obsługa zdarzenia new-message
 channel.bind('new-message', function(data) {
+    // Sprawdzamy, czy wiadomość należy do aktualnie wybranego kanału
+    if (data.channel && data.channel !== currentChannel) return;
+
     const msg = document.createElement('div');
     msg.classList.add('message');
     msg.innerHTML = `<span class="user">${data.username}:</span> ${data.message} <span class="time">${formatTime(data.created_at)}</span>`;
@@ -114,46 +139,39 @@ channel.bind('new-message', function(data) {
 
 // -------------------- FUNKCJA FORMATOWANIA CZASU --------------------
 
-// Funkcja formatująca czas w lokalnej strefie czasowej użytkownika
 function formatTime(dateStr) {
-    const date = new Date(dateStr); // Tworzymy obiekt Date z daty przesłanej z serwera (lub z lokalnego czasu)
+    const date = new Date(dateStr);
 
-    // Sprawdzamy, czy czas jest prawidłowy
     if (isNaN(date)) {
-        console.error("Niepoprawny czas");
-        return;
+        console.error("Niepoprawny czas:", dateStr);
+        return "??:??";
     }
 
-    // Ustawiamy strefę czasową użytkownika
-    const options = {
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false, // Użyj 24-godzinnego formatu
-        timeZoneName: 'short' // Dodaje nazwę strefy czasowej
-    };
+    // Usuwamy sztuczne dodanie 2 godzin
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
 
-    return date.toLocaleTimeString([], options); 
+    return `${hours}:${minutes}`;
 }
 
-document.querySelectorAll('.channel').forEach(channel => {
-    channel.addEventListener('click', () => {
-        currentChannel = channel.dataset.channel;
-        document.querySelector('.chat-header span').textContent = `# ${currentChannel}`;
+// -------------------- KANAŁY --------------------
+
+// Obsługa przełączania między kanałami
+document.querySelectorAll('.channel').forEach(channelEl => {
+    channelEl.addEventListener('click', () => {
+        // Usuwamy aktywną klasę z poprzednio wybranego kanału
+        document.querySelector('.channel.active')?.classList.remove('active');
+        
+        // Dodajemy aktywną klasę do wybranego kanału
+        channelEl.classList.add('active');
+        
+        currentChannel = channelEl.dataset.channel;
+        document.querySelector('.chat-header span').textContent = `${currentChannel}`;
         loadMessages();
     });
 });
 
-channel.bind('new-message', function(data) {
-    if (data.channel !== currentChannel) return; // Pomiń jeśli to nie nasz kanał
-
-    const msg = document.createElement('div');
-    msg.classList.add('message');
-    msg.innerHTML = `<span class="user">${data.username}:</span> ${data.message} <span class="time">${formatTime(data.created_at)}</span>`;
-    messagesDiv.appendChild(msg);
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-});
-
+// Dodawanie nowego kanału
 document.querySelector('.add-channel').addEventListener('click', () => {
     const newChannel = prompt("Podaj nazwę nowego kanału:");
     if (!newChannel) return;
@@ -161,16 +179,30 @@ document.querySelector('.add-channel').addEventListener('click', () => {
     const channelName = newChannel.trim().toLowerCase().replace(/\s+/g, '-');
     if (!channelName) return;
 
+    // Sprawdzamy, czy kanał już istnieje
+    const existingChannel = document.querySelector(`.channel[data-channel="${channelName}"]`);
+    if (existingChannel) {
+        alert("Ten kanał już istnieje!");
+        return;
+    }
+
     const channelDiv = document.createElement('div');
     channelDiv.classList.add('channel');
     channelDiv.setAttribute('data-channel', channelName);
-    channelDiv.textContent = `# ${channelName}`;
+    channelDiv.textContent = `${channelName}`;
+    
+    // Dodajemy obsługę kliknięcia dla nowego kanału
     channelDiv.addEventListener('click', () => {
+        // Usuwamy aktywną klasę z poprzednio wybranego kanału
+        document.querySelector('.channel.active')?.classList.remove('active');
+        
+        // Dodajemy aktywną klasę do wybranego kanału
+        channelDiv.classList.add('active');
+        
         currentChannel = channelName;
-        document.querySelector('.chat-header span').textContent = `# ${currentChannel}`;
+        document.querySelector('.chat-header span').textContent = ` ${currentChannel}`;
         loadMessages();
     });
 
     document.querySelector('.menu').appendChild(channelDiv);
 });
-
