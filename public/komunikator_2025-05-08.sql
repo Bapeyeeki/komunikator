@@ -7,7 +7,7 @@
 #
 # Host: v.je (MySQL 11.7.2-MariaDB-ubu2404)
 # Database: komunikator
-# Generation Time: 2025-05-08 07:10:13 +0000
+# Generation Time: 2025-05-08 09:10:28 +0000
 # ************************************************************
 
 
@@ -39,18 +39,49 @@ LOCK TABLES `messages` WRITE;
 
 INSERT INTO `messages` (`id`, `username`, `message`, `created_at`, `channel`)
 VALUES
-	(1,'dsds','dsdsdsd','2025-05-07 12:55:27','general'),
-	(2,'dfdfd','fdfdfdfdf','2025-05-07 12:56:23','general'),
-	(3,'dfdf','dfdfdfdfdfdf','2025-05-07 12:57:07','general'),
-	(4,'dffd','dfdfdfdf','2025-05-07 12:58:26','general'),
-	(5,'sdasd','asdasdasdasd','2025-05-07 13:01:36','general'),
-	(6,'fdgdfgdfg','fgdfgdgdgfdfgdfgdgdfg','2025-05-07 13:01:45','general'),
-	(7,'Robert','Czesc','2025-05-08 08:59:31','general'),
-	(8,'Robert','<b>Test</b>','2025-05-08 08:59:39','general'),
-	(9,'Robert','<b><u>Test😁</u></b>','2025-05-08 09:00:01','general'),
-	(10,'wda','as<b>asdasdasd</b>','2025-05-08 09:00:29','general');
+	(29,'Robert','Czesc','2025-05-08 10:33:15','general'),
+	(30,'Robert','Co tam?','2025-05-08 10:33:19','general'),
+	(31,'Robert','ds','2025-05-08 10:39:44','general'),
+	(32,'Robert','dd','2025-05-08 10:50:59','general'),
+	(33,'Robert','l','2025-05-08 10:51:56','Projekty'),
+	(34,'Robert','dsds','2025-05-08 11:02:48','general'),
+	(35,'Anka','asdasdads','2025-05-08 11:07:21','general'),
+	(36,'Anka','asdasdasd','2025-05-08 11:07:42','general'),
+	(37,'Piotrek','dddd','2025-05-08 11:07:50','general'),
+	(38,'Anka','test','2025-05-08 11:08:17','general'),
+	(39,'ktos','test','2025-05-08 11:08:48','general'),
+	(40,'Anka','test','2025-05-08 11:08:56','general');
 
 /*!40000 ALTER TABLE `messages` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+# Dump of table received_messages
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `received_messages`;
+
+CREATE TABLE `received_messages` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `sender_username` varchar(50) NOT NULL,
+  `recipient_username` varchar(50) NOT NULL,
+  `message` text NOT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `channel` varchar(100) NOT NULL DEFAULT 'general',
+  `is_read` tinyint(1) DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+
+LOCK TABLES `received_messages` WRITE;
+/*!40000 ALTER TABLE `received_messages` DISABLE KEYS */;
+
+INSERT INTO `received_messages` (`id`, `sender_username`, `recipient_username`, `message`, `created_at`, `channel`, `is_read`)
+VALUES
+	(1,'sigma','Robert','ewewew','2025-05-08 11:02:56','general',0),
+	(2,'sigma','Robert','dsdsd','2025-05-08 11:07:08','general',0),
+	(3,'ktos','Anka','sdsds','2025-05-08 11:08:37','general',0);
+
+/*!40000 ALTER TABLE `received_messages` ENABLE KEYS */;
 UNLOCK TABLES;
 
 
