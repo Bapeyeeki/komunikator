@@ -61,7 +61,7 @@ function insertAtCaret(content) {
 window.onload = loadMessages;
 
 function loadMessages() {
-    const currentUsername = usernameInput.value.trim();
+    const currentUsername = localStorage.getItem('username') || usernameInput.value.trim();
     const url = `get_messages.php?channel=${currentChannel}&user=${encodeURIComponent(currentUsername)}`;
 
     fetch(url)
@@ -72,6 +72,21 @@ function loadMessages() {
         })
         .catch(err => console.error("Błąd ładowania wiadomości: ", err));
 }
+
+
+// Po załadowaniu strony – ustaw pole nazwy użytkownika z localStorage
+window.addEventListener('load', () => {
+    const savedUsername = localStorage.getItem('username');
+    if (savedUsername) {
+        usernameInput.value = savedUsername;
+    }
+    loadMessages();
+});
+
+// Zapisuj nazwę użytkownika przy każdej zmianie
+usernameInput.addEventListener('input', () => {
+    localStorage.setItem('username', usernameInput.value.trim());
+});
 
 
 
