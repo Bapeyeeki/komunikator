@@ -17,7 +17,7 @@ try {
         $local_time = $datetime->format('H:i');  // Formatowanie godziny
 
         $user = htmlspecialchars($msg['username']);
-        $text = $msg['message'];
+        $text = strip_tags($msg['message'], '<b><i><u><strong><em>');
 
         echo "<div class='message'>";
         echo "<span class='user'>{$user}:</span> {$text} <span class='time'>{$local_time}</span>";
